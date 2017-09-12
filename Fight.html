@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ch">
+<head>
+	<meta charset="UTF-8">
+	<title>Ship Sim</title>
+	<link rel="stylesheet" href="css/style.css">
+	<style>
+	#canvas{
+		background-image: url('bgi.jpeg');
+		background-color: #cccccc;
+		width:100%;
+		height:100%;
+	}
+	</style>
+</head>
+<body>
+	<canvas id='canvas' width='1000' height="700"></canvas>
+	<script src="js/boom.js"></script>
+	<script src="js/ship.js"></script>
+	<!--<script src="dlr-latest.js" type="text/javascript"></script> -->
+	<script language=javascript>
+	window.onload=function()
+	{
+		as=null;
+		temp_code=0;
+		var canvas= document.getElementById('canvas'),
+			context=canvas.getContext('2d');//绘图上下文
+		//right=canvas.width;
+		//top=0;
+		//bottom=canvas.height;
+		/*var ship= new Array();
+		ship[0]=new Ship("Killer Queen",'#66ccff',38,40,37,39,96);
+        ship[0].x+=120;*/
+        var ship=new Ship("Killer Queen",'#66ccff',38,40,37,39,96,0,0);
+		ship.x+=0;
+		/*ship[1]=new Ship("ship 2",'#ff9900');
+		ship[1].KeySet(87,83,65,68,32);
+		ship[1].rotation=Math.PI;//右边的飞机转过来
+		ship[1].x-=120;*/
+		var fff=0,
+			ItemOfBooms=5,
+			NumberOfBooms=0,
+			mode='game';
+		var booms=[];
+		//var booms=new Array(ItemOfBooms);
+		//var booms=[];
+		/*for (var i = 0; i < ItemOfBooms; i++) {
+				booms[i]=0;
+			};*/
+		var up=0,
+			down=0,
+			left=0,
+			right=0,
+			fire=0;
+
+        function ConnectRequest() {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                var body=document.getElementById('body')
+                //console.log("doit函数被调用,收到:");
+                var message =xmlhttp.responseText;
+                console.log("收到1次，内容为:"+message);
+                //alert(xmlhttp.responseText);
+            }
+        }
+		function BoomIsTrue(){//没有飞弹就跳过
+			//for (var i = 0; i < ItemOfBooms; i++) {
+			for(var i in booms){
+				if(i){/*console.log('有飞弹耶..');*/return true;}
+			}
+			//console.log('没飞弹惹。。');
+			return false;
+		}
+		window.addEventListener('keydown',function(event)
+		{
+			/*if(event.keyCode>40)//飞弹所属问题
+			{
+				ship[0].KeydownJudge(event.keyCode,booms);
+			}else{
+				ship[1].KeydownJudge(event.keyCode,booms);
+			}*/
+//			for(var i=0;i<ship.length;i++)
+//				ship[i].KeydownJudge(event.keyCode,booms);
+			ship.KeydownJudge(event.keyCode,booms);
+		},false);
+		window.addEventListener('keyup',function(){
+			/*if(event.keyCode>40)
+			{
+				ship[0].KeyupJudge(event.keyCode);
+			}else{
+				ship[1].KeyupJudge(event.keyCode);
+			}*/
+//			for(var i=0;i<ship.length;i++)
+//				ship[i].KeyupJudge(event.keyCode,booms);
+			ship.KeyupJudge(event.keyCode,booms);
+		},false);
+		(	function drawFrame()
+			{
+				//console.log('一帧');
+				/*window.requestAnimationFrame(drawFrame,canvas);
+				context_cc.clearRect(0,0,canvas.width,canvas.height);
+				//Draw a red line at y=100
+				context_cc.strokeStyle="white";
+				context_cc.moveTo(5,100);
+				context_cc.lineTo(395,100);
+				context_cc.stroke();
+				context_cc.font="20px Arial";
+				//Place each word at y=100 with different textBaseline values
+				context_cc.textBaseline="top";
+				context_cc.fillText("Top",5,100);
+				context_cc.textBaseline="bottom";
+				context_cc.fillText("Bottom",50,100);
+				context_cc.textBaseline="middle";
+				context_cc.fillText("Middle",120,100);
+				context_cc.textBaseline="alphabetic";
+				context_cc.fillText("Alphabetic",190,100);
+				context_cc.textBaseline="hanging";
+				context_cc.fillText("Hanging",290,100);*/
+				//Draw a red line at y=100
+				window.requestAnimationFrame(drawFrame,canvas);
+				context.clearRect(0,0,canvas.width,canvas.height);
+
+                //var url_1 = "http://localhost/Connection Test/server.php?q=";
+                var url = "server.php?";
+                xmlhttp.open("post",url+"naive",false);
+                /*try
+                {
+
+                }
+                catch(err)
+                {
+                    try {
+                        xmlhttp.open("GET",url_1+"naive",true);
+                    }
+                    catch(err) {
+                        alert("麼的办法，发送失败");
+                    }
+
+                }*/
+                //xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=UTF-8");
+                //xmlhttp.send({"aaa":{"id":"naive"}});
+                xmlhttp.send(null);
+                console.log('已发送');
+
+
+
+				switch(mode){
+					case 'ready':
+					    break;
+					case 'game':
+						/*
+						 for (var i = 0; i <= 1; i++)
+						 {
+						 ship[i].MoveAndJudge(context);
+						 HealthPrint(context,ship[i]);
+						 };*/
+                        ship.MoveAndJudge(context);
+                        ship.HealthPrint(context);
+                        if(BoomIsTrue())
+                        {
+                            for (var j=0;j<booms.length;j++) {
+                                //var aa=0;
+                                //for (var j in booms){
+                                if(!booms[j])continue;
+                                //console.log("safe="+booms[j].safe);
+                                if(booms[j].MoveAndJudge(context,ship)) booms.splice(j,1);
+                                //aa++;
+                            }
+                        }
+                        break;
+				}
+
+			}()
+		);
+	};
+	</script>
+</body>
+</html>
+

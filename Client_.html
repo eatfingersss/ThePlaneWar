@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <title>This is Client!!</title>
+    <style>
+    </style>
+
+</head>
+<body>
+<canvas id='canvas' width='1000' height="700"></canvas>
+<!--<script src="dlr-latest.js" type="text/javascript"></script> -->
+<script language=javascript>
+
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    window.onload=function()
+    {
+        var canvas= document.getElementById('canvas'),
+            context=canvas.getContext('2d');//绘图上下文
+
+        function ConnectRequest() {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                //var body=document.getElementById('body')
+                //console.log("doit函数被调用,收到:");
+                var message =xmlhttp.responseText;
+                console.log("收到1次，内容为:"+message);
+                //alert(xmlhttp.responseText);
+            }
+        }
+
+        window.addEventListener('keydown',function(event)
+        {
+            //xmlhttp.send({'killerqueen':'naive'});
+        },false);
+
+        xmlhttp.onreadystatechange=ConnectRequest();
+
+        (	function drawFrame()
+            {
+                window.requestAnimationFrame(drawFrame,canvas);
+                context.clearRect(0,0,canvas.width,canvas.height);
+
+                //var url_1 = "http://localhost/Connection Test/server.php?q=";
+                var url = "Server.php?time=";
+                //console.log ("开始发送");
+                xmlhttp.open("post",url+"1",true);
+                /*try
+                {
+
+                }
+                catch(err)
+                {
+                    try {
+                        xmlhttp.open("GET",url_1+"naive",true);
+                    }
+                    catch(err) {
+                        alert("麼的办法，发送失败");
+                    }
+
+                }*/
+                //xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=UTF-8");
+                //xmlhttp.send({"aaa":{"id":"naive"}});
+                xmlhttp.send(null);
+                console.log('已发送');
+                //$.ajaxStart()
+                //xmlhttp.send({"killerqueen":"naive"});
+//                $.get('server.php',{'killerqueen':'naive'},function(data,status,xhr){
+                // console.log('返回'+data);
+                //jQuery.post("server.php",{"killerqueen":"naive"},doit());
+
+                //});
+
+            }()
+        );
+    };
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
